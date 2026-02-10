@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Donasi + Kalkulator Zakat</title>
+
+    <style>
+      /* ====== GLOBAL ====== */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f6f7fb;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 40px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 16px;
+        padding: 25px;
+      }
+      .btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        background: #16a34a;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+
+      /* ====== TAB ====== */
+      .tabs {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+      .tab {
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid #eee;
+        cursor: pointer;
+        background: #f1f5f9;
+        transition: 0.2s;
+      }
+      .tab.active {
+        background: #fff;
+      }
+      .tab:hover {
+        opacity: 0.85;
+      }
+
+      /* ====== SELECTABLE ITEM ====== */
+      .select {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        background: #fff;
+        transition: 0.2s;
+      }
+      .select.active {
+        border: 2px solid #22c55e;
+        background: #e9fce9;
+      }
+
+      /* ====== RESPONSIVE ====== */
+      @media (max-width: 900px) {
+        #donasi-wrapper {
+          flex-direction: column;
+        }
+        #zakat-wrapper {
+          flex-direction: column;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .zakat-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        display: flex;
+        gap: 25px;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 30px 35px;
+        border: 1px solid #e6e6e6;
+      }
+
+      .z-left {
+        flex: 1;
+      }
+
+      .z-right {
+        flex: 1;
+        background: #f8f8f8;
+        border-radius: 18px;
+        padding: 30px;
+      }
+
+      .zakat-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0d1632;
+        margin-bottom: 15px;
+      }
+
+      .zakat-subtitle {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .z-options {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .z-btn-option {
+        width: 180px;
+        border: 2px solid #d1d9ff;
+        border-radius: 14px;
+        padding: 15px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: 700;
+        background: #f9fbff;
+        transition: 0.3s;
+      }
+
+      .z-btn-option.active {
+        background: #eaf1ff;
+        border-color: #3f71ff;
+        color: #0037c4;
+      }
+
+      .z-input {
+        width: 100%;
+        max-width: 290px;
+        border-radius: 14px;
+        padding: 14px 18px;
+        border: 2px solid #202b5f;
+        font-size: 15px;
+        outline: none;
+        margin-top: 8px;
+      }
+
+      .z-note {
+        font-size: 14px;
+        margin-top: 7px;
+        color: #4a4a4a;
+      }
+
+      .z-hasil-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0d1632;
+        margin-bottom: 8px;
+      }
+
+      .z-hasil-angka {
+        font-size: 40px;
+        font-weight: 800;
+        color: #2dac4e;
+      }
+
+      .z-pay-btn {
+        padding: 14px;
+        background: #2dac4e;
+        border-radius: 12px;
+        font-weight: 700;
+        color: #fff;
+        width: 100%;
+        margin-top: 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .z-pay-btn:hover {
+        background: #1e8d3d;
+      }
+      /* .custom-width {
+        width: 10px;
+      } */
+    </style>
+
+    <script>
+      /* ====== SWITCH TAB ====== */
+      function setTab(tab) {
+        document.getElementById("content-donasi").style.display =
+          tab === "donasi" ? "flex" : "none";
+        document.getElementById("content-zakat").style.display =
+          tab === "zakat" ? "block" : "none";
+        document
+          .getElementById("tab-donasi")
+          .classList.toggle("active", tab === "donasi");
+        document
+          .getElementById("tab-zakat")
+          .classList.toggle("active", tab === "zakat");
+      }
+
+      /* ====== SELECT (Semua pilihan) ====== */
+      function selectItem(group, id) {
+        document
+          .querySelectorAll("[data-group='" + group + "']")
+          .forEach((el) => {
+            el.classList.remove("active");
+          });
+        document.getElementById(id).classList.add("active");
+      }
+
+      /* ====== PAGE LOAD ====== */
+      window.addEventListener("DOMContentLoaded", () => {
+        setTab("donasi");
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ====== TAB HEADER ====== -->
+      <div class="tabs">
+        <div id="tab-donasi" class="tab active" onclick="setTab('donasi')">
+          💖 Donasi
+        </div>
+        <div id="tab-zakat" class="tab" onclick="setTab('zakat')">
+          🕌 Kalkulator Zakat
+        </div>
+      </div>
+
+      <!-- ====== DONASI ====== -->
+      <div id="content-donasi" style="display: flex; gap: 40px">
+        <!-- LEFT -->
+        <div class="card" style="width: 55%">
+          <h2>Form Donasi</h2>
+
+          <p><b>Jenis Donasi</b></p>
+          <div class="grid-2">
+            <div
+              id="donasi-zakat"
+              class="select"
+              data-group="jenis"
+              onclick="selectItem('jenis','donasi-zakat')"
+            >
+              🕌<br />Zakat
+            </div>
+            <div
+              id="donasi-infak"
+              class="select active"
+              data-group="jenis"
+              onclick="selectItem('jenis','donasi-infak')"
+            >
+              💰<br />Infak
+            </div>
+            <div
+              id="donasi-sedekah"
+              class="select"
+              data-group="jenis"
+              onclick="selectItem('jenis','donasi-sedekah')"
+            >
+              🙌<br />Sedekah
+            </div>
+            <div
+              id="donasi-wakaf"
+              class="select"
+              data-group="jenis"
+              onclick="selectItem('jenis','donasi-wakaf')"
+            >
+              🏛️<br />Wakaf
+            </div>
+          </div>
+
+          <p style="margin-top: 20px"><b>Pilih Nominal</b></p>
+          <div class="grid-3">
+            <div
+              id="n50"
+              class="select"
+              data-group="nominal"
+              onclick="selectItem('nominal','n50')"
+            >
+              50K
+            </div>
+            <div
+              id="n100"
+              class="select"
+              data-group="nominal"
+              onclick="selectItem('nominal','n100')"
+            >
+              100K
+            </div>
+            <div
+              id="n250"
+              class="select active"
+              data-group="nominal"
+              onclick="selectItem('nominal','n250')"
+            >
+              250K
+            </div>
+            <div
+              id="n500"
+              class="select"
+              data-group="nominal"
+              onclick="selectItem('nominal','n500')"
+            >
+              500K
+            </div>
+            <div
+              id="n1000"
+              class="select"
+              data-group="nominal"
+              onclick="selectItem('nominal','n1000')"
+            >
+              1Jt
+            </div>
+            <div
+              id="n25"
+              class="select"
+              data-group="nominal"
+              onclick="selectItem('nominal','n25')"
+            >
+              2.5Jt
+            </div>
+          </div>
+
+          <input
+            type="number"
+            placeholder="Masukkan nominal lain"
+            style="
+              width: 100%;
+              padding: 12px;
+              border-radius: 10px;
+              border: 1px solid #ddd;
+              margin-top: 15px;
+            "
+          />
+
+          <p style="margin-top: 30px"><b>Metode Pembayaran</b></p>
+          <div class="grid-2">
+            <div
+              id="p-bank"
+              class="select"
+              data-group="pay"
+              onclick="selectItem('pay','p-bank')"
+            >
+              🏦<br /><b>Bank Transfer</b>
+            </div>
+            <div
+              id="p-ew"
+              class="select"
+              data-group="pay"
+              onclick="selectItem('pay','p-ew')"
+            >
+              📱<br /><b>E-Wallet</b>
+            </div>
+            <div
+              id="p-qris"
+              class="select"
+              data-group="pay"
+              onclick="selectItem('pay','p-qris')"
+            >
+              📲<br /><b>QRIS</b>
+            </div>
+            <div
+              id="p-va"
+              class="select"
+              data-group="pay"
+              onclick="selectItem('pay','p-va')"
+            >
+              💳<br /><b>Virtual Account</b>
+            </div>
+          </div>
+
+          <button class="btn" style="margin-top: 25px">Donasi Sekarang</button>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div
+          style="width: 40%; display: flex; flex-direction: column; gap: 25px"
+        >
+          <div class="card">
+            <h3>✨ Keunggulan Donasi Online</h3>
+            <ul style="line-height: 1.8">
+              <li>Aman dengan enkripsi tingkat bank</li>
+              <li>Laporan real-time penyaluran dana</li>
+              <li>Sertifikat donasi digital otomatis</li>
+              <li>Donasi rutin auto-debit</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>📊 Transparansi Dana</h3>
+            <p>Program Sosial <b style="float: right">40%</b></p>
+            <p>Pendidikan <b style="float: right">30%</b></p>
+            <p>Dakwah <b style="float: right">20%</b></p>
+            <p>Operasional <b style="float: right">10%</b></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== KALKULATOR ZAKAT ====== -->
+      <div
+        id="content-zakat"
+        style="display: none; max-width: 900px; margin: 0 auto"
+      >
+        <!-- <div style="text-align: center; margin-bottom: 30px">
+          <button
+            id="btn-mal"
+            class="z-btn-option active"
+            onclick="selectJenis('mal')"
+          >
+            💰 Zakat Mal
+          </button>
+          <button
+            id="btn-fitrah"
+            class="z-btn-option"
+            onclick="selectJenis('fitrah')"
+          >
+            🌾 Zakat Fitrah
+          </button>
+        </div> -->
+
+        <div class="zakat-container">
+          <div class="z-left">
+            <h2 class="zakat-title">Kalkulator Zakat</h2>
+
+            <div style="text-align: center; margin-bottom: 30px">
+              <button
+                id="btn-mal"
+                class="z-btn-option active"
+                onclick="selectJenis('mal')"
+              >
+                💰 Zakat Mal
+              </button>
+              <button
+                id="btn-fitrah"
+                class="z-btn-option"
+                onclick="selectJenis('fitrah')"
+              >
+                🌾 Zakat Fitrah
+              </button>
+            </div>
+
+            <div id="form-mal">
+              <p class="zakat-subtitle">Total Harta (Rp)</p>
+              <input
+                id="totalHarta"
+                type="number"
+                class="z-input"
+                placeholder="Masukkan total harta Anda"
+              />
+              <p class="z-note">Nisab: Rp 85.000.000 (setara 85 gram emas)</p>
+            </div>
+
+            <div id="form-fitrah" style="display: none">
+              <p class="zakat-subtitle">Jumlah Jiwa</p>
+              <input
+                id="jumlahJiwa"
+                type="number"
+                class="z-input"
+                placeholder="Masukkan jumlah jiwa"
+              />
+              <p class="z-note">Rp 35.000 per jiwa</p>
+            </div>
+          </div>
+
+          <div class="z-right">
+            <p class="z-hasil-title">Hasil Perhitungan</p>
+            <p>Zakat yang harus dibayar:</p>
+            <h1 id="hasilZakat" class="z-hasil-angka">Rp 0</h1>
+
+            <button id="btnBayar" class="z-pay-btn" style="display: none">
+              Bayar Zakat Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const nisab = 85000000;
+        const fitrahTarif = 35000;
+        let jenis = "mal";
+
+        function selectJenis(type) {
+          jenis = type;
+          document
+            .getElementById("btn-mal")
+            .classList.toggle("active", type === "mal");
+          document
+            .getElementById("btn-fitrah")
+            .classList.toggle("active", type === "fitrah");
+
+          document.getElementById("form-mal").style.display =
+            type === "mal" ? "block" : "none";
+          document.getElementById("form-fitrah").style.display =
+            type === "fitrah" ? "block" : "none";
+
+          hitungZakat();
+        }
+
+        document.addEventListener("input", hitungZakat);
+
+        function hitungZakat() {
+          let hasil = 0;
+
+          if (jenis === "mal") {
+            const total =
+              parseFloat(document.getElementById("totalHarta").value) || 0;
+            if (total >= nisab) hasil = total * 0.025;
+          } else {
+            const jiwa =
+              parseFloat(document.getElementById("jumlahJiwa").value) || 0;
+            hasil = jiwa * fitrahTarif;
+          }
+
+          document.getElementById("hasilZakat").innerText =
+            "Rp " + hasil.toLocaleString("id-ID");
+          document.getElementById("btnBayar").style.display =
+            hasil > 0 ? "block" : "none";
+        }
+      </script>
+    </div>
+  </body>
+</html>
