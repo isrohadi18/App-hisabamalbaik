@@ -1,8 +1,20 @@
+<div align="center">
 
-# 🕌 Zakat & Infaq Calculator
+# **🕌Zakat & Infaq Calculator**
 
-## 👋 Pengantar
-![Zakat & Donasi Banner](https://github.com/rafi-zimraan/Elementory-Wordpress-BPD/blob/main/assets/backgroundApp.png)
+  <img src="assets/amalbaik.png" width="150" alt="App-hisabamalbaik"/>
+  &nbsp;
+    <p><b>IT & Digital Solutions Company Profile Website</b> <br>
+    Clean • Modern • Responsive • Interactive</p>
+
+  <img src="https://img.shields.io/badge/HTML5-orange?logo=html5&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CSS3-blue?logo=css3&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-yellow?logo=javascript&logoColor=black"/>
+  <a href ="https://isrohadi18.github.io/CodingCamp-RohadiDJ/" taeget="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/preview-TECHLOGO%20NEXUS-brown" alt="preview"/></a>
+  <img src="https://img.shields.io/badge/Status-Active-success"/>
+
+</div>
+
 
 Aplikasi kalkulator berbasis **HTML, CSS, dan JavaScript murni** yang dirancang untuk membantu pengguna menghitung kewajiban **Zakat Mal**, **Zakat Fitrah**, serta **Infaq** secara cepat, akurat, dan **sepenuhnya *offline***.
 
