@@ -1,10 +1,11 @@
 <div align="center">
 
-# **🕌Zakat & Infaq Calculator**
+# **🕌**
+# **CALCULATOR ZAKAT & INFAQ**
 
-  <img src="assets/amalbaik.png" width="150" alt="App-hisabamalbaik"/>
+  <img src="assets/amalbaik.png" width="300" alt="App-hisabamalbaik"/>
   &nbsp;
-    <p><b>IT & Digital Solutions Company Profile Website</b> <br>
+    <p><b>Calculator Cerdas Hisab Amal Baik</b> <br>
     Clean • Modern • Responsive • Interactive</p>
 
   <img src="https://img.shields.io/badge/HTML5-orange?logo=html5&logoColor=white"/>
